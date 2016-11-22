@@ -187,32 +187,38 @@ class HeartbeatStatus(object):
 
     def show(self):
         """Show the status of the heartbeats."""
+        heartbeat_statuses = self.get_statuses()
+
+        if len(heartbeat_statuses):
+            puts(colored.yellow("Heartbeats"))
+            puts(colored.yellow("==========\n"))
+
+            for heartbeat in heartbeat_statuses:
+                print("* %s" % heartbeat_statuses[heartbeat])
+
+    def get_statuses(self):
+        """Return the status of every beat."""
         actions = self.hb.get_actions()
-        lines = []
+        lines = {}
 
         for action in actions:
             line = self.get_status(actions[action])
             if line:
-                lines.append(line)
+                lines[action] = line
 
-        if lines:
-            puts(colored.yellow("Heartbeats"))
-            puts(colored.yellow("==========\n"))
-
-            for line in lines:
-                print(line)
+        return lines
 
     def get_status(self, heartbeat):
         """Return the status of a beat."""
 
-        beat = heartbeat["last_beat"]
+        last_beat = heartbeat["last_beat"]
         leniency = heartbeat["data"]["leniency"]
         last_line = heartbeat["data"]["last_line"]
         never_line = heartbeat["data"]["never_line"]
         line = None
 
-        if beat:
-            diff = self.now - datetime.fromtimestamp(beat)
+        if last_beat:
+            diff = self.now - datetime.fromtimestamp(last_beat)
             if leniency and diff.seconds > leniency:
                 line = colored.red(last_line % self.format_diff(diff))
         else:
