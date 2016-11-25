@@ -219,7 +219,7 @@ class HeartbeatStatus(object):
 
         if last_beat:
             diff = self.now - datetime.fromtimestamp(last_beat)
-            if leniency and diff.seconds > leniency:
+            if leniency and diff.total_seconds() > leniency:
                 line = colored.red(last_line % self.format_diff(diff))
         else:
             line = colored.red(never_line)
@@ -238,12 +238,12 @@ class HeartbeatStatus(object):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--status", action="store_true")
+    parser.add_argument("--motd", action="store_true")
     parser.add_argument("--add", action="store_true")
     parser.add_argument("--ping")
     args = parser.parse_args()
 
-    if args.status:
+    if args.motd:
         with HeartbeatResource() as hb:
             HeartbeatStatus(hb).show()
     elif args.add:
