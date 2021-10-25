@@ -265,6 +265,5 @@ def main():
     else:
         parser.print_help()
 
-if __name__ == "__main__":
-    if sys.stdout.isatty():
-        main()
+if __name__ == "__main__" and sys.stdout.isatty():
+    main()
