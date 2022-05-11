@@ -184,8 +184,14 @@ class Heartbeat(object):
     def log_action(self, action):
         """Log that an action took place."""
 
-        self.actions[action]["last_beat"] = time()
+        try:
+            self.actions[action]["last_beat"] = time()
+        except KeyError:
+            print("Invalid heartbeat")
+            return False
+
         self.actions_updated = True
+        return True
 
 class HeartbeatStatus(object):
 
