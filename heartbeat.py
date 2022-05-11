@@ -117,6 +117,14 @@ class Heartbeat(object):
 
         self.actions_updated = True
 
+    def remove(self, name):
+        """Remove a heartbeat."""
+        try:
+            del self.actions[name]
+            self.save()
+        except KeyError:
+            print("Invalid heartbeat")
+
     def load(self):
         """Load the actions in from last time."""
 
@@ -239,8 +247,9 @@ class HeartbeatStatus(object):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--motd", action="store_true")
-    parser.add_argument("--add", action="store_true")
     parser.add_argument("--list", action="store_true")
+    parser.add_argument("--add", action="store_true")
+    parser.add_argument("--remove", action="store")
     parser.add_argument("--ping")
     args = parser.parse_args()
 
@@ -260,6 +269,8 @@ def main():
 
         with HeartbeatResource() as hb:
             hb.add(code, data)
+    elif args.remove:
+        Heartbeat().remove(args.remove)
     elif args.ping:
         with HeartbeatResource() as hb:
             hb.log_action(args.ping)
