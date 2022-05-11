@@ -240,6 +240,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--motd", action="store_true")
     parser.add_argument("--add", action="store_true")
+    parser.add_argument("--list", action="store_true")
     parser.add_argument("--ping")
     args = parser.parse_args()
 
@@ -262,6 +263,9 @@ def main():
     elif args.ping:
         with HeartbeatResource() as hb:
             hb.log_action(args.ping)
+    elif args.list:
+        for action in Heartbeat().get_actions():
+            print(action)
     else:
         parser.print_help()
 
