@@ -6,7 +6,7 @@ from clint.textui import colored, puts
 from datetime import datetime
 from os import path
 from time import time
-import pickle
+import json
 import sys
 
 class HeartbeatInterval(object):
@@ -130,7 +130,7 @@ class Heartbeat(object):
 
         try:
             with open(self.action_path, mode="rb") as f:
-                self.actions = pickle.load(f)
+                self.actions = json.loads(f.read())
         except (EOFError, FileNotFoundError):
             pass
 
@@ -144,8 +144,8 @@ class Heartbeat(object):
         """Save the actions to file."""
 
         try:
-            with open(self.action_path, mode="wb") as f:
-                pickle.dump(self.actions, f)
+            with open(self.action_path, mode="w") as f:
+                f.write(json.dumps(self.actions, indent=4))
         except PermissionError:
             sys.exit("Could not save changes to disk.  Ensure %s can be written to." % self.action_path)
 
